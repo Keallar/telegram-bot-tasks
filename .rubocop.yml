@@ -1,0 +1,8 @@
+Metrics/MethodLength: 
+  Length: 30
+
+convention:Style/Documentation:
+  Enabled: false
+
+convention:Style/FrozenStringLiteralComment:
+  Enabled: false

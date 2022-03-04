@@ -1,7 +1,7 @@
 require 'telegram/bot'
 require_relative 'bot'
 
-class Task
+class Tasks
   attr_accessor :task
 
   def initialize

@@ -1,6 +1,6 @@
 require 'telegram/bot'
 require 'dotenv/load'
-require_relative 'motivate'
+require_relative 'motivation'
 
 class Bot
   def initialize
@@ -17,7 +17,7 @@ class Bot
           bot.api.send_message(chat_id: message.chat.id, text: 'Your task!')
         when '/motivate'
           bot.api.send_message(chat_id: message.chat.id, text: 'Motivation!')
-          motivate = Motivate.new
+          motivate = Motivation.new
           value = motivate.random
           bot.api.send_message(chat_id: message.chat.id, 
                                text: "#{value['text']}\n#{value['author']}",

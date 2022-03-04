@@ -1,7 +1,7 @@
 require 'net/http'
 require 'json'
 
-class Motivate
+class Motivation
   attr_accessor :motivate
 
   def initialize

@@ -1,6 +1,7 @@
 require 'telegram/bot'
 require 'dotenv/load'
 require_relative 'listener'
+require_relative 'timer'
 
 class Bot
   def initialize
@@ -13,24 +14,10 @@ class Bot
       bot.listen do |message|
         cur_bot_time = Time.now
 
-        Listener.new(message, bot).request
+        Listener.new(bot, message).call
 
-        # case message
-        # when Telegram::Bot::Types::CallbackQuery
-        #   case message.data 
-        #   when 'give_answer'
-        #     bot.api.send_message(chat_id: message.from.id, text: "Give answer")
-        #   when 'get_answer'
-        #     bot.api.send_message(chat_id: message.from.id, text: "Get answer")
-        #   end
+        bot.api.send_message(chat_id: message.from.id, text: "#{Timer.check_times}")
 
-        # when Telegram::Bot::Types::Message  
-        #   ikb = [InlineButton::GIVE_ANSWER,
-        #          InlineButton::GET_ANSWER
-        #   ]
-        #   markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
-        #   bot.api.send_message(chat_id: message.chat.id, text: 'Make a choice', reply_markup: markup)
-        # end
       end
     end
   end

@@ -4,7 +4,8 @@ require_relative 'tasks'
 require_relative 'assets/inline_button'
 
 class Listener
-  attr_reader :message, :bot
+  attr_accessor :message
+  attr_reader :bot
 
   def initialize(bot, message)
     @bot = bot

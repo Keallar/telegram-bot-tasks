@@ -3,7 +3,7 @@ require_relative 'bot'
 require 'json'
 
 class Tasks
-  attr_accessor :task
+  attr_accessor :task, :answer, :question
 
   def initialize
     @task = request
@@ -16,8 +16,9 @@ class Tasks
   end
 
   def random
-    @task.sample
+    task = @task.sample
+    @question = task['question']
+    @answer = task['answer']
+    @question
   end
 end
-
-# Tasks.new.request

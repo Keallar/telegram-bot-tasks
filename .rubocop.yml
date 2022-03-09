@@ -6,3 +6,6 @@ convention:Style/Documentation:
 
 convention:Style/FrozenStringLiteralComment:
   Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false

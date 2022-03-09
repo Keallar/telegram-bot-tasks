@@ -9,3 +9,6 @@ convention:Style/FrozenStringLiteralComment:
 
 Bundler/OrderedGems:
   Enabled: false
+
+Metrics/BlockLength:
+  Length: 100

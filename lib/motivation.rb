@@ -20,3 +20,5 @@ class Motivation
     @motivate.sample
   end
 end
+
+# Motivation.new.request

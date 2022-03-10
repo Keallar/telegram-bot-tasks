@@ -6,7 +6,6 @@ require_relative 'timer'
 class Bot
   def initialize
     token = ENV['TOKEN']
-    start = false
 
     Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
       bot.logger.info('Bot has been started')

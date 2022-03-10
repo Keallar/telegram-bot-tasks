@@ -11,8 +11,7 @@ class Tasks
 
   def request
     file = File.read('data/tasks.json')
-    response = JSON.parse(file)
-    response
+    JSON.parse(file)
   end
 
   def random

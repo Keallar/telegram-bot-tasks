@@ -16,7 +16,7 @@ class Bot
 
         Listener.new(bot, message).call
 
-        bot.api.send_message(chat_id: message.from.id, text: "#{Timer.check_times}")
+        bot.api.send_message(chat_id: message.from.id, text: Timer.check_times.to_s)
 
       end
     end

@@ -11,9 +11,8 @@ class Motivation
   def request
     url = 'https://type.fit/api/quotes'
     uri = URI(url)
-    str_response = Net::HTTP.get(uri)
-    response = JSON.parse(str_response)
-    response
+    response = Net::HTTP.get(uri)
+    JSON.parse(response)
   end
 
   def random

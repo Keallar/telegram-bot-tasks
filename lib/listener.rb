@@ -2,19 +2,23 @@ require 'telegram/bot'
 require_relative 'motivation'
 require_relative 'tasks'
 require_relative 'assets/inline_button'
-require_relative 'assets/reply_keyboard_markup'
+require_relative 'assets/keyboard_button'
 
 class Listener
-  attr_accessor :message, :start
+  attr_accessor :message, :have_task, :task, :answer
   attr_reader :bot
 
-  def initialize(bot, message)
+  def initialize(bot)
     @bot = bot
-    @message = message
-    @start = false
+    @have_task = false
+    @have_answer = false
+    @task = nil
+    @answer = nil
+    @message = nil
   end
 
-  def call
+  def call(message)
+    @message = message
     begin
       case @message
       when Telegram::Bot::Types::CallbackQuery
@@ -24,26 +28,39 @@ class Listener
         message_call
       end
     rescue => e
-      bot.logger.info(e.message)
+      @bot.logger.info(e.message)
     end
   end
 
   def query_call
     case @message.data
-    when 'get_task'
-      task = Tasks.new
-      question = task.random
-      @bot.logger.info('Task was send')
-      bot.api.send_message(chat_id: @message.from.id, text: question, reply_markup: ReplyKeyboardMarkup::REPLY_TASK)
 
     when 'get_motivate'
       motivate = Motivation.new
       value = motivate.random
-      bot.api.send_message(chat_id: @message.from.id, text: "#{value['text']}\n#{value['author']}")
       bot.logger.info('Motivate was send')
+      bot.api.send_message(chat_id: @message.from.id, text: "#{value['text']}\n#{value['author']}")
 
-    when 'answer_task'
+    when 'give_answer'
       bot.api.send_message(chat_id: @message.from.id, text: "Answer")
+
+    when 'get_task_early'
+      @have_task = true
+      kb = [KeyboardButton::MAIN_MENU, KeyboardButton::LEARN_ASNWER]
+      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
+      @bot.api.send_message(chat_id: @message.chat.id, text: 'Get task early', reply_markup: markup)
+
+    when 'learn_answer'
+      @have_task = false
+
+    when 'back_to_answer'
+      bot.api.send_message(chat_id: @message.from.id, text: 'Back to answer')
+
+    when 'main_menu'
+      kb = [KeyboardButton::GET_TASK_EARLY, KeyboardButton::GET_MOTIVATE]
+      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
+      @bot.logger.info('Main menu')
+      @bot.api.send_message(chat_id: @message.chat.id, text: 'Main menu', reply_markup: markup)
 
     else
       bot.api.send_message(chat_id: @message.from.id, text: "Error!")
@@ -53,23 +70,10 @@ class Listener
   def message_call
     case @message.text
     when '/start'
-      @bot.api.send_message(chat_id: @message.chat.id, text: "Hello, #{@message.from.first_name}!")
-      @start = true
+      kb = [KeyboardButton::GET_TASK_EARLY, KeyboardButton::GET_MOTIVATE]
+      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
+      @bot.api.send_message(chat_id: @message.chat.id, text: 'Start', reply_markup: markup)
       @bot.logger.info('Bot has been started working')
-
-    when '/task'
-      @bot.api.send_message(chat_id: @message.chat.id, text: 'Task!')
-      task = Tasks.new
-      question = task.random
-      @bot.api.send_message(chat_id: @message.chat.id, text: "#{question}\n}", date: @message.date)
-      @bot.logger.info('Task was send')
-
-    when '/motivate'
-      @bot.api.send_message(chat_id: @message.chat.id, text: 'Motivation!')
-      motivate = Motivation.new
-      value = motivate.random
-      @bot.api.send_message(chat_id: message.chat.id, text: "#{value['text']}\n#{value['author']}", date: @message.date)
-      @bot.logger.info('Motivate was send')
 
     when '/add_task'
       @bot.api.send_message(chat_id: @message.chat.id, text: 'Added task!')
@@ -78,31 +82,18 @@ class Listener
       @bot.api.send_message(chat_id: @message.chat.id, text: 'Help!')
 
     when '/stop'
-      @bot.api.send_message(chat_id: @message.chat.id, text: "Bye, #{message.from.first_name}!")
+      @bot.api.send_message(chat_id: @message.chat.id, text: "Bye, #{@message.from.first_name}!")
       @start = false
       @bot.logger.info('Bot has been started working')
 
     else
-      ikb = [InlineButton::GET_TASK, InlineButton::GET_MOTIVATE]
-      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
-      @bot.api.send_message(chat_id: @message.chat.id, text: 'Make a choice', reply_markup: markup)
+      if @have_task.eql?(true)
+        bot.logger.info(@message.text)
+        @bot.api.send_message(chat_id: @message.chat.id, text: 'Else answer!')
+      end
+      # ikb = [InlineButton::GET_MOTIVATE, InlineButton::GIVE_ANSWER]
+      # markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
+      # @bot.api.send_message(chat_id: @message.chat.id, text: 'Make a choice', reply_markup: markup)
     end
   end
 end
-
-# case message
-# when Telegram::Bot::Types::CallbackQuery
-#   case message.data 
-#   when 'give_answer'
-#     bot.api.send_message(chat_id: message.from.id, text: "Give answer")
-#   when 'get_answer'
-#     bot.api.send_message(chat_id: message.from.id, text: "Get answer")
-#   end
-
-# when Telegram::Bot::Types::Message  
-#   ikb = [InlineButton::GIVE_ANSWER,
-#          InlineButton::GET_ANSWER
-#   ]
-#   markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
-#   bot.api.send_message(chat_id: message.chat.id, text: 'Make a choice', reply_markup: markup)
-# end

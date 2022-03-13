@@ -18,6 +18,6 @@ class Tasks
     task = @task.sample
     @question = task['question']
     @answer = task['answer']
-    @question
+    { answer: @answer, question: @question }
   end
 end

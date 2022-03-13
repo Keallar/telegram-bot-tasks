@@ -9,15 +9,14 @@ class Bot
 
     Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
       bot.logger.info('Bot has been started')
-      start_bot_time = Time.now
-      bot.listen do |message|
-        cur_bot_time = Time.now
+      listener = Listener.new(bot)
 
-        Listener.new(bot, message).call
+      bot.listen do |message|
+        listener.call(message)
 
         bot.api.send_message(chat_id: message.from.id, text: Timer.check_times.to_s)
-
       end
+
     end
   end
 end

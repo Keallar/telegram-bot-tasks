@@ -5,7 +5,7 @@ require_relative 'assets/inline_button'
 require_relative 'assets/keyboard_button'
 
 class Listener
-  attr_accessor :message, :have_task, :task, :answer
+  attr_accessor :message, :have_task, :task, :answer, :have_answer
   attr_reader :bot
 
   def initialize(bot)
@@ -91,9 +91,6 @@ class Listener
         bot.logger.info(@message.text)
         @bot.api.send_message(chat_id: @message.chat.id, text: 'Else answer!')
       end
-      # ikb = [InlineButton::GET_MOTIVATE, InlineButton::GIVE_ANSWER]
-      # markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
-      # @bot.api.send_message(chat_id: @message.chat.id, text: 'Make a choice', reply_markup: markup)
     end
   end
 end

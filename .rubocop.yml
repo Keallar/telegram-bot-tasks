@@ -16,6 +16,9 @@ Style/RedundantBegin:
 Style/RescueStandardError:
   Enabled: false
 
+Style/RedundantInterpolation:
+  Enabled: false
+
 Metrics/BlockLength:
   Max: 100
 
@@ -26,7 +29,7 @@ Metrics/CyclomaticComplexity:
   Max: 20
 
 Metrics/MethodLength: 
-  Max: 50
+  Max: 100
 
 Layout/LineLength:
   Max: 300

@@ -1,6 +1,6 @@
 require 'telegram/bot'
 require_relative 'motivation'
-require_relative 'tasks'
+require_relative 'task'
 require_relative 'assets/inline_button'
 require_relative 'assets/keyboard_button'
 
@@ -35,32 +35,14 @@ class Listener
   def query_call
     case @message.data
 
-    when 'get_motivate'
-      motivate = Motivation.new
-      value = motivate.random
-      bot.logger.info('Motivate was send')
-      bot.api.send_message(chat_id: @message.from.id, text: "#{value['text']}\n#{value['author']}")
-
-    when 'give_answer'
-      bot.api.send_message(chat_id: @message.from.id, text: "Answer")
-
-    when 'get_task_early'
-      @have_task = true
-      kb = [KeyboardButton::MAIN_MENU, KeyboardButton::LEARN_ASNWER]
-      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
-      @bot.api.send_message(chat_id: @message.chat.id, text: 'Get task early', reply_markup: markup)
-
     when 'learn_answer'
       @have_task = false
-
-    when 'back_to_answer'
-      bot.api.send_message(chat_id: @message.from.id, text: 'Back to answer')
-
-    when 'main_menu'
+      @have_answer = false
       kb = [KeyboardButton::GET_TASK_EARLY, KeyboardButton::GET_MOTIVATE]
-      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
-      @bot.logger.info('Main menu')
-      @bot.api.send_message(chat_id: @message.chat.id, text: 'Main menu', reply_markup: markup)
+      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
+      @bot.api.send_message(chat_id: @message.from.id, text: "#{@task[:answer]}", reply_markup: markup)
+      @task = nil
+      @answer = nil
 
     else
       bot.api.send_message(chat_id: @message.from.id, text: "Error!")
@@ -71,18 +53,57 @@ class Listener
     case @message.text
     when '/start'
       kb = [KeyboardButton::GET_TASK_EARLY, KeyboardButton::GET_MOTIVATE]
-      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
-      @bot.api.send_message(chat_id: @message.chat.id, text: 'Start', reply_markup: markup)
+      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
       @bot.logger.info('Bot has been started working')
+      @bot.api.send_message(chat_id: @message.chat.id, text: 'Start', reply_markup: markup)
 
-    when '/add_task'
-      @bot.api.send_message(chat_id: @message.chat.id, text: 'Added task!')
+    when 'Мотивация'
+      motivate = Motivation.new
+      value = motivate.random
+      bot.logger.info('Motivate was send')
+      bot.api.send_message(chat_id: @message.from.id, text: "#{value['text']}\n#{value['author']}")
+
+    when 'Получить задание'
+      @task = Task.new.random
+      @answer = @task[:answer]
+      @have_task = true
+      kb = [KeyboardButton::MAIN_MENU]
+      reply_markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
+      bot.logger.info('Task was send')
+      @bot.api.send_message(chat_id: @message.chat.id, text: 'Задача', reply_markup: reply_markup)
+      ikb = [InlineButton::LEARN_ASNWER]
+      inline_markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
+      @bot.api.send_message(chat_id: @message.chat.id, text: "#{@task[:question]}", reply_markup: inline_markup)
+
+    when 'Вернуться к задаче'
+      if @task
+        kb = [KeyboardButton::MAIN_MENU]
+        reply_markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
+        bot.logger.info('Task was send again')
+        @bot.api.send_message(chat_id: @message.chat.id, text: " Возврат", reply_markup: reply_markup)
+        ikb = [InlineButton::LEARN_ASNWER]
+        inline_markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
+        @bot.api.send_message(chat_id: @message.chat.id, text: "#{@task[:question]}", reply_markup: inline_markup)
+      end
+
+    when 'Главное меню'
+      kb = []
+      if @have_task == true
+        kb = [KeyboardButton::BACK_TO_TASK, KeyboardButton::GET_TASK_EARLY, KeyboardButton::GET_MOTIVATE]
+      else
+        kb = [KeyboardButton::GET_TASK_EARLY, KeyboardButton::GET_MOTIVATE]
+      end
+      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
+      @bot.logger.info('Main menu')
+      @bot.api.send_message(chat_id: @message.chat.id, text: 'Main menu', reply_markup: markup)
 
     when '/help'
       @bot.api.send_message(chat_id: @message.chat.id, text: 'Help!')
 
     when '/stop'
-      @bot.api.send_message(chat_id: @message.chat.id, text: "Bye, #{@message.from.first_name}!")
+      rkr = Telegram::Bot::Types::ReplyKeyboardRemove.new
+      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: rkr, resize_keyboard: true)
+      @bot.api.send_message(chat_id: @message.chat.id, text: "Bye, #{@message.from.first_name}!", reply_markup: markup)
       @start = false
       @bot.logger.info('Bot has been started working')
 

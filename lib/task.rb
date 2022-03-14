@@ -2,7 +2,7 @@ require 'telegram/bot'
 require_relative 'bot'
 require 'json'
 
-class Tasks
+class Task
   attr_accessor :task, :answer, :question
 
   def initialize

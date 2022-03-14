@@ -5,13 +5,12 @@ require_relative 'assets/inline_button'
 require_relative 'assets/keyboard_button'
 
 class Listener
-  attr_accessor :message, :have_task, :task, :answer, :have_answer
+  attr_accessor :message, :have_task, :task, :answer
   attr_reader :bot
 
   def initialize(bot)
     @bot = bot
     @have_task = false
-    @have_answer = false
     @task = nil
     @answer = nil
     @message = nil
@@ -37,7 +36,6 @@ class Listener
 
     when 'learn_answer'
       @have_task = false
-      @have_answer = false
       kb = [KeyboardButton::GET_TASK_EARLY, KeyboardButton::GET_MOTIVATE]
       markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
       @bot.api.send_message(chat_id: @message.from.id, text: "#{@task[:answer]}", reply_markup: markup)
@@ -106,12 +104,6 @@ class Listener
       @bot.api.send_message(chat_id: @message.chat.id, text: "Bye, #{@message.from.first_name}!", reply_markup: markup)
       @start = false
       @bot.logger.info('Bot has been started working')
-
-    else
-      if @have_task.eql?(true)
-        bot.logger.info(@message.text)
-        @bot.api.send_message(chat_id: @message.chat.id, text: 'Else answer!')
-      end
     end
   end
 end

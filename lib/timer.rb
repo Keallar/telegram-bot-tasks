@@ -1,4 +1,10 @@
 class Timer
+  attr_accessor :countdown
+
+  def initialize(countdown)
+    @countdown = countdown
+  end
+
   def self.check_times
     Time.now
   end

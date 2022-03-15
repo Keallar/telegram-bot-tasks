@@ -55,6 +55,12 @@ class Listener
       @bot.logger.info('Bot has been started working')
       @bot.api.send_message(chat_id: @message.chat.id, text: 'Start', reply_markup: markup)
 
+    when '/timer'
+
+
+    when "/set"
+        
+
     when 'Мотивация'
       motivate = Motivation.new
       value = motivate.random

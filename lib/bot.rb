@@ -16,7 +16,6 @@ class Bot
 
         bot.api.send_message(chat_id: message.from.id, text: Timer.check_times.to_s)
       end
-
     end
   end
 end

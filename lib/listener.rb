@@ -27,7 +27,8 @@ class Listener
         message_call
       end
     rescue => e
-      @bot.logger.info(e.message)
+      @bot.logger.error(e.message)
+      @bot.logger.error(e.backtrace)
     end
   end
 
@@ -55,12 +56,6 @@ class Listener
       @bot.logger.info('Bot has been started working')
       @bot.api.send_message(chat_id: @message.chat.id, text: 'Start', reply_markup: markup)
 
-    when '/timer'
-
-
-    when "/set"
-        
-
     when 'Мотивация'
       motivate = Motivation.new
       value = motivate.random
@@ -68,7 +63,7 @@ class Listener
       bot.api.send_message(chat_id: @message.from.id, text: "#{value['text']}\n#{value['author']}")
 
     when 'Получить задание'
-      @task = Task.new.random
+      @task = Task.send(:new).random
       @answer = @task[:answer]
       @have_task = true
       kb = [KeyboardButton::MAIN_MENU]
@@ -103,6 +98,9 @@ class Listener
 
     when '/help'
       @bot.api.send_message(chat_id: @message.chat.id, text: 'Help!')
+
+    when '/settings'
+      @bot.api.send_message(chat_id: @message.chat.id, text: 'Settings!')
 
     when '/stop'
       rkr = Telegram::Bot::Types::ReplyKeyboardRemove.new

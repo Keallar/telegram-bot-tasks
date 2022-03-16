@@ -1,24 +1,25 @@
 require 'telegram/bot'
 require 'dotenv/load'
+require 'logger'
 require_relative 'listener'
-require_relative 'timer'
-require_relative '../workers/timer_worker'
 
 class Bot
+  TOKEN = ENV['TOKEN']
+
   def initialize
-    token = ENV['TOKEN']
+    begin
+      Telegram::Bot::Client.run(TOKEN, logger: Logger.new($stderr)) do |bot|
+        bot.logger.info('Bot has been started')
+        listener = Listener.new(bot)
 
-    Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
-      bot.logger.info('Bot has been started')
-      listener = Listener.new(bot)
-
-      bot.listen do |message|
-        listener.call(message)
-
-        bot.api.send_message(chat_id: message.from.id, text: Timer.check_times.to_s)
-
-        TimerWorker.perform_async(bot, message.from.first_name, 1)
+        bot.listen do |message|
+          # Thread.start(message) do |rqst|
+            listener.call(message)
+          # end
+        end
       end
+    rescue => e
+      @bot.logger.error(e.message)
     end
   end
 end

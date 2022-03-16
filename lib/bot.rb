@@ -13,9 +13,9 @@ class Bot
         listener = Listener.new(bot)
 
         bot.listen do |message|
-          # Thread.start(message) do |rqst|
-            listener.call(message)
-          # end
+          Thread.start(message) do |rqst|
+            listener.call(rqst)
+          end
         end
       end
     rescue => e

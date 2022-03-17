@@ -1,5 +1,5 @@
 require 'whenever'
-require '../lib/request'
+require_relative '../lib/request'
 
 set :output, "log/cron_log.log"
 

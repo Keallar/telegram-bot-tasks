@@ -1,7 +1,7 @@
-convention:Style/Documentation:
+Style/Documentation:
   Enabled: false
 
-convention:Style/FrozenStringLiteralComment:
+Style/FrozenStringLiteralComment:
   Enabled: false
 
 Bundler/OrderedGems:

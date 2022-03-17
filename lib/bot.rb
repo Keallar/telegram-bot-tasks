@@ -23,6 +23,7 @@ class Bot
       end
     rescue => e
       @bot.logger.error(e.message)
+      logger.error(e.message)
     end
   end
 end

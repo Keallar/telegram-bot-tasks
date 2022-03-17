@@ -29,9 +29,7 @@ class Listener
       end
     rescue => e
       @bot.logger.error(e.message)
-      logger.error(e.message)
       @bot.logger.error(e.backtrace)
-      logger.error(e.backtrace)
     end
   end
 

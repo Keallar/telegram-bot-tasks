@@ -1,7 +1,8 @@
 require 'whenever'
+require '../lib/request'
 
 set :output, "log/cron_log.log"
 
 every 1.minute do
-  command 
+  runner 'Request.send_task'
 end

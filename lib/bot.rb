@@ -5,10 +5,13 @@ require_relative 'listener'
 
 class Bot
   TOKEN = ENV['TOKEN']
+  LOGGER = Logger.new($stderr)
 
   def initialize
+    logger = Logger.new('log/bot_logs.log')
+
     begin
-      Telegram::Bot::Client.run(TOKEN, logger: Logger.new($stderr)) do |bot|
+      Telegram::Bot::Client.run(TOKEN, logger: LOGGER) do |bot|
         bot.logger.info('Bot has been started')
         listener = Listener.new(bot)
 

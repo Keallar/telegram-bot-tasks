@@ -3,6 +3,7 @@ require_relative 'motivation'
 require_relative 'task'
 require_relative 'assets/inline_button'
 require_relative 'assets/keyboard_button'
+require_relative 'request'
 
 class Listener
   attr_accessor :message, :have_task, :task, :answer
@@ -28,7 +29,9 @@ class Listener
       end
     rescue => e
       @bot.logger.error(e.message)
+      logger.error(e.message)
       @bot.logger.error(e.backtrace)
+      logger.error(e.backtrace)
     end
   end
 
@@ -55,6 +58,7 @@ class Listener
       markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
       @bot.logger.info('Bot has been started working')
       @bot.api.send_message(chat_id: @message.chat.id, text: 'Start', reply_markup: markup)
+      Request.send_task(@message.from.id)
 
     when 'Мотивация'
       motivate = Motivation.new
@@ -73,6 +77,19 @@ class Listener
       ikb = [InlineButton::LEARN_ASNWER]
       inline_markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
       @bot.api.send_message(chat_id: @message.chat.id, text: "#{@task[:question]}", reply_markup: inline_markup)
+
+    when '/get_task'
+      # @task = Task.send(:new).random
+      # @answer = @task[:answer]
+      # @have_task = true
+      # kb = [KeyboardButton::MAIN_MENU]
+      # reply_markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
+      # bot.logger.info('Task was send')
+      # @bot.api.send_message(chat_id: @message.chat.id, text: 'Задача', reply_markup: reply_markup)
+      # ikb = [InlineButton::LEARN_ASNWER]
+      # inline_markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
+      # @bot.api.send_message(chat_id: @message.chat.id, text: "#{@task[:question]}", reply_markup: inline_markup)
+      Request.send_task(@message.from.id)
 
     when 'Вернуться к задаче'
       if @task

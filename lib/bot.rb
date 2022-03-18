@@ -1,6 +1,7 @@
 require 'telegram/bot'
 require 'dotenv/load'
 require 'logger'
+require 'rufus-scheduler'
 require_relative 'listener'
 
 class Bot
@@ -11,6 +12,7 @@ class Bot
 
   def initialize
     @client = Telegram::Bot::Client.new(TOKEN, logger: LOGGER)
+    scheduler = Rufus::Scheduler.new
     logger = Logger.new('log/bot_logs.log')
 
     begin
@@ -21,6 +23,10 @@ class Bot
         bot.listen do |message|
           Thread.start(message) do |rqst|
             listener.call(rqst)
+          end
+          scheduler.every '5s' do
+            Request.send_task(message.chat.chat_id)
+            puts "Hello!"
           end
         end
       end

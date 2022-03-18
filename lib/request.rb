@@ -5,17 +5,12 @@ require 'telegram/bot'
 class Request
   TOKEN = ENV['TOKEN']
 
-  def self.send_task
+  def self.send_task(chat_id)
     begin
-      Telegram::Bot::Client.run(TOKEN, logger: Logger.new($stderr)) do |bot|
-        bot.logger.info('Request bot')
-
-        bot.listen do |message|
-          uri = URI("https://api.telegram.org/bot#{TOKEN}/sendMessage?chat_id=#{message.chat.chat_id}&text=try")
-          res = Net::HTTP.get(uri)
-          puts res
-        end
-      end
+      uri = URI("https://api.telegram.org/bot#{TOKEN}/sendMessage?chat_id=#{chat_id}&text=try")
+      res = Net::HTTP.get(uri)
+      # bot.logger.info(res)
+      puts "REQUEST"
     rescue => e
       bot.logger.error(e.message)
     end

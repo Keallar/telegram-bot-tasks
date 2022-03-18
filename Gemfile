@@ -11,4 +11,4 @@ gem 'rspec'
 gem 'rubocop'
 gem 'telegram-bot-ruby'
 gem 'ruby-enum', '~> 0.9.0'
-gem 'whenever', require: false
+gem 'rufus-scheduler'

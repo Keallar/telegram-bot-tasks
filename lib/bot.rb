@@ -25,7 +25,7 @@ class Bot
             listener.call(rqst)
           end
           scheduler.every '5s' do
-            Request.send_task(message.chat.chat_id)
+            Request.send_task(bot, message)
             puts "Hello!"
           end
         end

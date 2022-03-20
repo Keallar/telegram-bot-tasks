@@ -76,17 +76,17 @@ class Listener
       inline_markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
       @bot.api.send_message(chat_id: @message.chat.id, text: "#{@task[:question]}", reply_markup: inline_markup)
 
-    when '/get_task'
-      # @task = Task.send(:new).random
-      # @answer = @task[:answer]
-      # @have_task = true
-      # kb = [KeyboardButton::MAIN_MENU]
-      # reply_markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
-      # bot.logger.info('Task was send')
-      # @bot.api.send_message(chat_id: @message.chat.id, text: 'Задача', reply_markup: reply_markup)
-      # ikb = [InlineButton::LEARN_ASNWER]
-      # inline_markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
-      # @bot.api.send_message(chat_id: @message.chat.id, text: "#{@task[:question]}", reply_markup: inline_markup)
+    when 'Задание'
+      @task = Task.send(:new).random
+      @answer = @task[:answer]
+      @have_task = true
+      kb = [KeyboardButton::MAIN_MENU]
+      reply_markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, resize_keyboard: true)
+      bot.logger.info('Task was send')
+      @bot.api.send_message(chat_id: @message.chat.id, text: 'Задача', reply_markup: reply_markup)
+      ikb = [InlineButton::LEARN_ASNWER]
+      inline_markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: ikb)
+      @bot.api.send_message(chat_id: @message.chat.id, text: "#{@task[:question]}", reply_markup: inline_markup)
       Request.send_task(@message.from.id)
 
     when 'Вернуться к задаче'

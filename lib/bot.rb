@@ -25,7 +25,7 @@ class Bot
           Thread.start(message) do |rqst|
             listener.call(rqst, req)
           end
-          scheduler.every '10s' do
+          scheduler.every '1h' do
             req.send_task(message)
           end
         end

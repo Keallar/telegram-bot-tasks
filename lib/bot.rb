@@ -19,14 +19,14 @@ class Bot
       @client.run do |bot|
         bot.logger.info('Bot has been started')
         listener = Listener.new(bot)
+        req = Request.new(bot)
 
         bot.listen do |message|
           Thread.start(message) do |rqst|
-            listener.call(rqst)
+            listener.call(rqst, req)
           end
-          scheduler.every '5s' do
-            Request.send_task(bot, message)
-            puts "Hello!"
+          scheduler.every '10s' do
+            req.send_task(message)
           end
         end
       end

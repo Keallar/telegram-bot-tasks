@@ -101,8 +101,8 @@ GEM
       descendants_tracker (~> 0.0, >= 0.0.3)
 
 PLATFORMS
+  x64-mingw-ucrt
   x64-mingw32
-  x64-unknown
   x64-unknown
   x86_64-linux
 

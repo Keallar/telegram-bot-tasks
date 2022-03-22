@@ -1,9 +1,9 @@
 ## GET STARTED
-# Deploy:
+### Deploy:
 
   ruby bin/main.rb
 
-..or with docker..
+#### ..or with docker..
 
-  docker-compose build
-  docker-compose up 
+  1. docker-compose build
+  2. docker-compose up 

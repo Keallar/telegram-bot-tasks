@@ -5,8 +5,6 @@ require 'rufus-scheduler'
 require_relative 'listener'
 
 class Bot
-  attr_reader :client
-
   TOKEN = ENV['TOKEN']
   LOGGER = Logger.new($stderr)
 

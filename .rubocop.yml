@@ -19,6 +19,9 @@ Style/RescueStandardError:
 Style/RedundantInterpolation:
   Enabled: false
 
+Layout/FirstHashElementIndentation:
+  Enabled: false
+
 Metrics/BlockLength:
   Max: 100
 

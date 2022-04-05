@@ -1,0 +1,13 @@
+version: '3'
+services:
+  app:
+    build: .
+    volumes:
+      - .:/usr/src
+    depends_on:
+      - db
+  
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=pass
